@@ -1,10 +1,10 @@
 def pdfInformeFacturaProyecto(request, id):
     proyecto = Proyecto.objects.get(id=id)
     cliente = Clientes.objects.all()
-    estado = EstadoFactura.objects.all()
-    detalleFactura = DetalleFactura.objects.all()
-    ingresos = Ingreso.objects.all()
-    ingreso = ingresos.first()
+    #estado = EstadoFactura.objects.all()
+    #detalleFactura = DetalleFactura.objects.all()
+    #ingresos = Ingreso.objects.all()
+    #ingreso = ingresos.first()
     
     # Asignar el id del proyecto a una variable y filtrar los ingresos por proyecto
     detallesIngreso = Ingreso.objects.filter(Proyecto=id).order_by('Factura')
@@ -62,25 +62,32 @@ def pdfInformeFacturaProyecto(request, id):
     styleG.fontName = "Helvetica-Bold"
 
     
-    Contador = len(FacProyecto)
-    Contador = max(Contador, 18)  # Si el contador es menor o igual a 18, establecerlo en 18.
+    
+    Contador=len(FacProyecto)
+    
+   
+    if Contador <=18:
+        Contador=18
+    
 
-    Num = round(Contador / 18)
-    s = Contador // Num  # Usar división entera para obtener el tamaño de la sección.
+    Num=round(int(Contador/18))
+    s=int(Contador/Num)   
+    if s>18:
+        s=18
 
-    if s > 18:
-        s = 18  # Si el tamaño de la sección es mayor que 18, reducirlo a 18.
+    Contador_new=[0]
+    x=0
 
-    Contador_new = list(range(0, Contador, s))
-    Contador_new.append(Contador)
+    while(x+s < Contador):
+        x=x+s
+        Contador_new.append(x)
 
     contador = 0
-    TotalFac = 0
-    ValtotalIngreso = 0
-    TotalFacturacion = 0
-    SaldoXFacturar = 0
+    #TotalFac = 0
+    ValtotalIngreso=0
+    TotalFacturacion=0
+    SaldoXFacturar=0
     NoFactura2 = str(0)
-    
     
     for i in range(len(Contador_new)):
 
@@ -131,19 +138,19 @@ def pdfInformeFacturaProyecto(request, id):
         c.setFont('Helvetica',12)
         proyectoVal=round((proyecto.Valor),2)
         
-        TotalFactutacionFac=0
+        TotalFacturacionFac=0
         NoFactura2 = str(0)
         ValtotalIngresoM=''
-        TotalFactutacionFacM=''
+        TotalFacturacionFacM=''
         SaldoXFacturarM=''
 
         for p in FacProyecto:
             valor = p.ValorFactura
-            TotalFactutacionFac = valor + TotalFactutacionFac
-            TotalFactutacionFacM= "{:>15,}".format(TotalFactutacionFac).replace(',','~').replace('.',',').replace('~','.')
-            TotalFactutacionFacM=Paragraph(str(TotalFactutacionFacM),styleF)
+            TotalFacturacionFac = valor + TotalFacturacionFac
+            TotalFacturacionFacM= "{:>15,}".format(TotalFacturacionFac).replace(',','~').replace('.',',').replace('~','.')
+            TotalFacturacionFacM=Paragraph(str(TotalFacturacionFacM),styleF)
 
-            SaldoXFacturar=round((proyectoVal-TotalFactutacionFac),2)
+            SaldoXFacturar=round((proyectoVal-TotalFacturacionFac),2)
             SaldoXFacturarM= "{:>15,}".format(SaldoXFacturar).replace(',','~').replace('.',',').replace('~','.')
 
         c.setFillColor(HexColor('#000000'))
@@ -180,20 +187,20 @@ def pdfInformeFacturaProyecto(request, id):
                     NoFactura1 = str(facturaNum)
                     if NoFactura1  != NoFactura2:
 
-                        TotalFactutacion = valor + TotalFactutacion
+                        TotalFacturacion = valor + TotalFacturacion
                     
-                        TotalFactutacionM= "{:>15,}".format(TotalFactutacion).replace(',','~').replace('.',',').replace('~','.')
-                        TotalFactutacionM=Paragraph(str(TotalFactutacionM),styleF)
+                        TotalFacturacionM= "{:>15,}".format(TotalFacturacion).replace(',','~').replace('.',',').replace('~','.')
+                        TotalFacturacionM=Paragraph(str(TotalFacturacionM),styleF)
 
-                        SaldoXFacturar=round((proyectoVal-TotalFactutacionFac),2)
+                        SaldoXFacturar=round((proyectoVal-TotalFacturacionFac),2)
                         SaldoXFacturarM= "{:>15,}".format(SaldoXFacturar).replace(',','~').replace('.',',').replace('~','.')
 
                     else:
-                        TotalFactutacionFac = 0
-                        TotalFactutacionFacM= "{:>15,}".format(TotalFactutacionFac).replace(',','~').replace('.',',').replace('~','.')
-                        TotalFactutacionFacM=Paragraph(str(TotalFactutacionFacM),styleF)
+                        TotalFacturacionFac = 0
+                        TotalFacturacionFacM= "{:>15,}".format(TotalFacturacionFac).replace(',','~').replace('.',',').replace('~','.')
+                        TotalFacturacionFacM=Paragraph(str(TotalFacturacionFacM),styleF)
                         
-                        SaldoXFacturar=round((proyectoVal-TotalFactutacionFac),2)
+                        SaldoXFacturar=round((proyectoVal-TotalFacturacionFac),2)
                         SaldoXFacturarM= "{:>15,}".format(SaldoXFacturar).replace(',','~').replace('.',',').replace('~','.')
                     
                         
@@ -235,10 +242,10 @@ def pdfInformeFacturaProyecto(request, id):
                     NoFactura1 = str(facturaNum)
                     if NoFactura1  != NoFactura2:
 
-                        TotalFactutacion = valor + TotalFactutacion
+                        TotalFacturacion = valor + TotalFacturacion
                     
-                        TotalFactutacionM= "{:>15,}".format(TotalFactutacion).replace(',','~').replace('.',',').replace('~','.')
-                        TotalFactutacionM=Paragraph(str(TotalFactutacionM),styleF)
+                        TotalFacturacionM= "{:>15,}".format(TotalFacturacion).replace(',','~').replace('.',',').replace('~','.')
+                        TotalFacturacionM=Paragraph(str(TotalFacturacionM),styleF)
                     NoFactura2 = NoFactura1
 
                     valorM= "{:>15,}".format(valor).replace(',','~').replace('.',',').replace('~','.')
@@ -298,7 +305,7 @@ def pdfInformeFacturaProyecto(request, id):
             
             
             #data1.append ([TexTotal,'','','',TotalFactutacionM,'',ValtotalIngresoM,'',''])
-            data1.append ([TexTotal,'','','',TotalFactutacionFacM,'',ValtotalIngresoM,'',''])
+            data1.append ([TexTotal,'','','',TotalFacturacionFacM,'',ValtotalIngresoM,'',''])
             
             c.setFillColor(HexColor('#548236'))
             c.setFont('Helvetica-Bold',16)
